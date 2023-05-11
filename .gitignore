@@ -6,3 +6,5 @@ uploads/
 .idea/
 temp_uploads/
 venv/
+docker/front_dist
+.DS_Store

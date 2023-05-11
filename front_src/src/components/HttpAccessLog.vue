@@ -49,6 +49,13 @@
                 width="55">
             </el-table-column>
             <el-table-column
+                prop="path"
+                align="center"
+                class-name="log_col"
+                label="Path"
+                width="185">
+            </el-table-column>
+            <el-table-column
                 prop="data"
                 class-name="log_col"
                 min-width="500">
