@@ -17,17 +17,34 @@ services:
         volumes:
             - ./:/app
         environment:
-            - FRONTEND_DIR=/app/docker/front_dist
             - DATABASE_DSN=mysql+aiomysql://root:app@mysql:3306/app?charset=utf8mb4
             - UPLOAD_PATH=/app/uploads
             - TEMP_FILE_PATH=/app/temp_uploads
             - ENABLE_DNS_LOG=True
             - DNS_KEY=
 
-            - BEHIND_PROXY=False
+            - BEHIND_PROXY=True
             - URL_PREFIX=/admin        # admin panel's URL prefix, use http://example.com/admin/index.html to access it
             - INIT_USER=admin:admin    # admin user created after first startup
-        ports:
-            - "9090:80"       # or if you want to warp a reverse proxy, change BEHIND_PROXY=False to BEHIND_PROXY=True, and using `X-Real-IP` and `X-Real-Port` to transfer client ip and port
+        # ports:
+            # - "9090:80"       # or if you want to warp a reverse proxy, change BEHIND_PROXY=False to BEHIND_PROXY=True, and using `X-Real-IP` and `X-Real-Port` to transfer client ip and port
             # - "53:53/udp" # dns port mapping setting, you need uncomment this to enable dns log function, and maybe need to specific ip address, more information see README.md
             # - "127.0.0.1:8080:8080"
+
+    nginx:
+        image: nginx:alpine
+        volumes:
+            - ./docker/nginx.conf:/etc/nginx/nginx.conf
+            - ./docker/server.crt:/cert/server.crt
+            - ./docker/server.key:/cert/server.key
+            - ./docker/default.conf.template:/etc/nginx/templates/default.conf.template
+        environment:
+            - SSL_CERTIFICATE_PATH=/cert/server.crt
+            - SSL_PRIVATE_KEY_PATH=/cert/server.key
+        ports:
+            - 9090:80
+            - 9091:443
+        links:
+            - app
+    
+        

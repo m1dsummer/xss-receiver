@@ -24,7 +24,7 @@ class Config:
         'APP_DEBUG': [True, False, False, False, '调试模式'],
 
         'INIT_USER': [True, False, False, 'admin:admin', '默认账户密码'],
-        'FRONTEND_DIR': [True, False, False, '/dev/shm', '静态资源路径'],
+        'FRONTEND_DIR': [True, False, False, '/app/docker/front_dist', '静态资源路径'],
         'SECRET_KEY': [True, False, False, os.urandom(32), ''],
         'URL_PREFIX': [True, False, False, '/admin', '管理面板前缀'],
         'BEHIND_PROXY': [True, False, False, False, '是否在负载均衡后面'],
