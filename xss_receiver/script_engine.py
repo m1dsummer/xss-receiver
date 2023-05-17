@@ -79,6 +79,10 @@ var request = {
     
     get_file_list_by_name: function (name) {
         return call_python("_engine.request.get_file_list_by_name", name).map(_engine_parse_file);
+    },
+
+    get_cookie: function (name) {
+        return call_python("_engine.request.get_cookie", name)
     }
 };
 
@@ -97,6 +101,10 @@ var response = {
         } else {
             call_python("_engine.response.send", value);
         }
+    },
+
+    set_cookie: function (key, value) {
+        return call_python("_engine.response.set_cookie", key, value)
     }
 };
 
@@ -209,6 +217,7 @@ class ScriptEngine:
         )
         self.interpreter.export_function('_engine.request.get_file_by_name', lambda name: _file_to_dict(request.files.get(name)))
         self.interpreter.export_function('_engine.request.get_file_list_by_name', lambda name: list(map(_file_to_dict, request.files.getlist(name))))
+        self.interpreter.export_function('_engine.request.get_cookie', lambda name: str(request.cookies.get(name)))
 
         # response
         def set_status_code(status_code: int):
@@ -217,7 +226,13 @@ class ScriptEngine:
             else:
                 raise dukpy.JSRuntimeError("status code should be number")
 
+        def set_cookie(key, value):
+            response.cookies[key] = str(value)
+            response.cookies[key]['max-age'] = 200
+
         self.interpreter.export_function('_engine.response.set_status_code', set_status_code)
+        self.interpreter.export_function('_engine.response.set_cookie', set_cookie)
+
 
         def set_header(name: str, value: str):
             if isinstance(name, str):
