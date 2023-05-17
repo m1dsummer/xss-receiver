@@ -229,6 +229,8 @@ class ScriptEngine:
         def set_cookie(key, value):
             response.cookies[key] = str(value)
             response.cookies[key]['max-age'] = 200
+            response.cookies[key]['samesite'] = "None;Secure"
+            response.cookies[key]['path'] = "/"
 
         self.interpreter.export_function('_engine.response.set_status_code', set_status_code)
         self.interpreter.export_function('_engine.response.set_cookie', set_cookie)
